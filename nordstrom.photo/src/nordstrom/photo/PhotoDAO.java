@@ -12,10 +12,14 @@ import java.util.ArrayList;
 import java.sql.Timestamp;
 import java.sql.Time;
 
+/**
+ * 
+ * @author bryce
+ * Implements DAO design pattern - database operations for photo objects
+ *
+ */
 
 public class PhotoDAO {
-	
-
 	
 	public PhotoDAO() {
 		

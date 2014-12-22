@@ -35,7 +35,6 @@ public class PhotoAppHandler extends HttpServlet {
      */
     public PhotoAppHandler() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -45,14 +44,15 @@ public class PhotoAppHandler extends HttpServlet {
 		 
 		 ArrayList<Photo> photos = new ArrayList<Photo>();
 		 
+		 //get photos from DB via DAO
 		 PhotoDAO dao = new PhotoDAO();
 		 photos = dao.getPhotos();
 
 		 //add photos to request
-		 
 		 request.setAttribute("photos", photos);
+		 
+		 //pass to index.jsp main read view
 		 getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
-		 //show index.jsp
 	}
 
 	/**

@@ -49,10 +49,15 @@ public class UploadHandler extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String uploadedBy = null;
 		String fileloc = null;
-		
+	
+		//needed for file processing - from Apache commons tools
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		
+		/* The photo upload will come in as multipart content type - using
+		Apache commons library to handle uploads */
+		
+		//validate that the request has multipart content
 		boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipartContent) {
 			getServletContext().getRequestDispatcher("/add.jsp").forward(request, response);
@@ -77,12 +82,12 @@ public class UploadHandler extends HttpServlet {
 						uploadedBy = fileItem.getString();
 					}
 				}
-				
+				//if it's not a form field, it will be the upload - write to file using binary io
 				else {
 					//store file in uploads
 					fileloc = "/home/bryce/Desktop/uploads/" + fileItem.getName();
 				    
-					//don't save an empty file
+					//don't save an empty file, return to read view instead 
 					if (fileItem.getName() == "") {
 						getServletContext().getRequestDispatcher("/view").forward(request, response);
 						return;
@@ -91,7 +96,10 @@ public class UploadHandler extends HttpServlet {
 					//check to see if file already exists
 					Path path = Paths.get(fileloc);
 
-					//if so, append the milisecond timestamp to avoid collisions 
+					/* If so, append the millisecond timestamp to avoid collisions 
+					TODO: this should be a bit more robust, collisions still technichally
+					possible at high load  
+					*/
 					if (Files.exists(path)) {
 						int index = fileloc.contains(".") ? fileloc.lastIndexOf('.') : fileloc.length();
 						fileloc = fileloc.substring(0, index) + "_"+ System.currentTimeMillis() + fileloc.substring(index);
